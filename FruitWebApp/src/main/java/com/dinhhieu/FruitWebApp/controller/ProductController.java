@@ -42,4 +42,27 @@ public class ProductController {
         this.productService.deleteProduct(id);
         return new ResponData<>(HttpStatus.NO_CONTENT.value(), "Delete product with id "+id);
     }
+
+    @GetMapping("/get-all-product-with-page")
+    ResponData<?> getAllProductWithPage(@RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
+                                        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize){
+        return new ResponData<>(HttpStatus.OK.value(), "get all product with page", this.productService.getAllProductWithPage(pageNo,pageSize));
+    }
+
+    @GetMapping("/getPage-product-sortBy")
+    ResponData<?> getProductSortBy(@RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
+                                   @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
+                                   @RequestParam(required = false) String... sorts){
+        return new ResponData<>(HttpStatus.OK.value(), "get product page with sort", this.productService.getAllProductWithBySortMultiColumns(pageNo,pageSize,sorts));
+    }
+
+    @GetMapping("/search")
+    ResponData<?> findProduct(@RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
+                              @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                              @RequestParam(required = false) String name,
+                              @RequestParam(required = false) Double priceMin,
+                              @RequestParam(required = false) Double priceMax){
+
+        return new ResponData<>(HttpStatus.OK.value(), "get search product ", this.productService.searchProduct(pageNo,pageSize,name,priceMin,priceMax));
+    }
 }

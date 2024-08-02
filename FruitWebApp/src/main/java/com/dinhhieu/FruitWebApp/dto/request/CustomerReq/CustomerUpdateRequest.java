@@ -3,6 +3,8 @@ package com.dinhhieu.FruitWebApp.dto.request.CustomerReq;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,5 +20,7 @@ public class CustomerUpdateRequest {
     private String email;
 
     private String phoneNumber;
+
+    private List<String> roles;
 
 }

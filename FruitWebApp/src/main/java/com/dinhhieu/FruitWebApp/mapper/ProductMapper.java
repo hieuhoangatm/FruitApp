@@ -12,5 +12,5 @@ public interface ProductMapper {
     Product toProduct(ProductCreateRequest productCreateRequest);
 
     ProductResponse toProductResponse(Product product);
-    void updateProduc(@MappingTarget Product product, ProductUpdateRequest productUpdateRequest);
+    void updateProduct(@MappingTarget Product product, ProductUpdateRequest productUpdateRequest);
 }

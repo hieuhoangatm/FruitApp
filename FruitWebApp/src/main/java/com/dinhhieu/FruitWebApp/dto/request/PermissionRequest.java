@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PermissonRequest {
+public class PermissionRequest {
     private String id;
     private String name;
     private String description;

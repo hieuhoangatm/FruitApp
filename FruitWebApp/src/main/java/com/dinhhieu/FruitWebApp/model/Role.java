@@ -2,21 +2,21 @@ package com.dinhhieu.FruitWebApp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.Set;
 
-@Entity
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-@Table(name = "roles")
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
 public class Role {
     @Id
-    private String name;
-
-    private String description;
+    String name;
+    String description;
 
     @ManyToMany
     Set<Permission> permissions;

@@ -1,11 +1,15 @@
 package com.dinhhieu.FruitWebApp.service;
 
 import com.dinhhieu.FruitWebApp.dto.request.AuthReq.AuthenticationRequest;
+import com.dinhhieu.FruitWebApp.dto.request.LogoutRequest;
+import com.dinhhieu.FruitWebApp.dto.request.RefreshTokenRequest;
 import com.dinhhieu.FruitWebApp.dto.request.VerifyTokenRequest;
 import com.dinhhieu.FruitWebApp.dto.response.AuthRes.AuthenticationResponse;
 import com.dinhhieu.FruitWebApp.dto.response.VerifyTokenResponse;
 import com.dinhhieu.FruitWebApp.model.Customer;
+import com.dinhhieu.FruitWebApp.model.InvalidatedToken;
 import com.dinhhieu.FruitWebApp.repository.CustomerRepository;
+import com.dinhhieu.FruitWebApp.repository.InvalidatedTokenRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -13,22 +17,24 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.StringJoiner;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthenticationService {
     private final CustomerRepository customerRepository;
 
+    private final InvalidatedTokenRepository invalidatedTokenRepository;
     @NonFinal
     protected final String SIGNER_KEY = "9CD+6WbRMMdb0l2BHVdztaEVeAoAX89m11Ez26LH4sQIkQ/X2nPVF9KTReRT4Z2n";
 
@@ -41,6 +47,12 @@ public class AuthenticationService {
 
         Date expityTime = signedJWT.getJWTClaimsSet().getExpirationTime();
         boolean verifed = signedJWT.verify(verifier); // kiem tra xem token dung hay khong
+
+        // check token-logout exist in table invalidated_token in  database
+        if(invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID())){
+            throw new RuntimeException("account not be unauthenticated");
+        }
+
 
         return VerifyTokenResponse.builder().valid(verifed && expityTime.after(new Date())).build();
     }
@@ -69,6 +81,7 @@ public class AuthenticationService {
                 ))
                 .claim("JWT keyt", "nội dung clam của JWT")
                 .claim("scope",buildScope(customer))
+                .jwtID(UUID.randomUUID().toString())
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -90,14 +103,82 @@ public class AuthenticationService {
 //        }
 //        return stringJoiner.toString();
         StringBuilder stringBuilder = new StringBuilder();
-        if(!customer.getRole().isEmpty()){
-            for(String role : customer.getRole()){
-                stringBuilder.append(role+" ");
-            }
+//        if(!customer.getRole().isEmpty()){
+//            for(String role : customer.getRole()){
+//                stringBuilder.append(role+" ");
+//            }
+//        }
+        log.info("customer role : "+ customer.getRoles().toString());
+        if(!customer.getRoles().isEmpty()){
+            customer.getRoles().forEach(
+                    role -> {
+                        stringBuilder.append(role.getName()+" ");
+                        if(!role.getPermissions().isEmpty()){
+                            role.getPermissions().forEach(
+                                    permission -> stringBuilder.append(permission.getName()+" ")
+                            );
+                        }
+                    }
+
+            );
+
         }
         if (!stringBuilder.isEmpty()) {
             stringBuilder.setLength(stringBuilder.length() - 1);
         }
         return stringBuilder.toString();
+    }
+
+    public void logout(LogoutRequest logoutRequest) throws ParseException, JOSEException {
+        SignedJWT signToken = verifyTokenLogout(logoutRequest.getToken());
+
+        String jitID = signToken.getJWTClaimsSet().getJWTID();
+
+        Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
+
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jitID)
+                .expiryTime(expiryTime)
+                .build();
+
+        invalidatedTokenRepository.save(invalidatedToken);
+    }
+
+    private SignedJWT verifyTokenLogout(String token) throws JOSEException, ParseException {
+        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
+
+        SignedJWT signedJWT = SignedJWT.parse(token);
+
+        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        boolean verified = signedJWT.verify(verifier);
+
+        if(!(verified && expiryTime.after(new Date()))){
+            throw new RuntimeException("account not be authenticated");
+        }
+
+        return signedJWT;
+    }
+
+    public AuthenticationResponse refreshToken(RefreshTokenRequest refreshTokenRequest) throws ParseException, JOSEException {
+        SignedJWT signedJWT = verifyTokenLogout(refreshTokenRequest.getToken());
+
+        String jitID = signedJWT.getJWTClaimsSet().getJWTID();
+        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder()
+                .id(jitID)
+                .expiryTime(expiryTime)
+                .build();
+
+        invalidatedTokenRepository.save(invalidatedToken);
+
+        String emailSubject = signedJWT.getJWTClaimsSet().getSubject();
+
+        Customer customer = customerRepository.findByEmail(emailSubject).orElseThrow(() -> new RuntimeException("Not found customer with email "+emailSubject));
+
+        String token = genarateToken(customer);
+
+        return AuthenticationResponse.builder().token(token).authenticated(true).build();
     }
 }

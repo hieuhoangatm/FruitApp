@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -37,4 +39,7 @@ public class Product {
     @JsonIgnore
     private Category category;
 
+
+    @OneToMany(mappedBy = "product")
+    private List<Review> reviews;
 }

@@ -4,14 +4,12 @@ import com.dinhhieu.FruitWebApp.dto.request.CustomerReq.CustomerCreateRequest;
 import com.dinhhieu.FruitWebApp.dto.request.CustomerReq.CustomerUpdateRequest;
 import com.dinhhieu.FruitWebApp.dto.response.CustomerRes.CustomerResponse;
 import com.dinhhieu.FruitWebApp.model.Customer;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-29T14:28:13+0700",
+    date = "2024-08-01T16:51:17+0700",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Amazon.com Inc.)"
 )
 @Component
@@ -49,10 +47,6 @@ public class CustomerMapperImpl implements CustomerMapper {
         customerResponse.address( customer.getAddress() );
         customerResponse.email( customer.getEmail() );
         customerResponse.phoneNumber( customer.getPhoneNumber() );
-        Set<String> set = customer.getRole();
-        if ( set != null ) {
-            customerResponse.role( new LinkedHashSet<String>( set ) );
-        }
         customerResponse.createdAt( customer.getCreatedAt() );
         customerResponse.updatedAt( customer.getUpdatedAt() );
         customerResponse.createdBy( customer.getCreatedBy() );

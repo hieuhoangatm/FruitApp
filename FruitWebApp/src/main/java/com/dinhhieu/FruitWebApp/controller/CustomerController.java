@@ -87,6 +87,12 @@ public class CustomerController {
 
     @GetMapping("/customer/getInfo")
     public ResponData<?> getInfoCustomer(){
-        return new ResponData<>(HttpStatus.OK.value(),"get info user by id", this.getInfoCustomer());
+        return new ResponData<>(HttpStatus.OK.value(),"get info user by id", this.customerService.getInfoThisCustomer());
+    }
+
+    @GetMapping("/customer/searchRole")
+    public ResponData<?> findCustomerRole(@RequestParam("roleName") String roleName,
+                                          @RequestParam("permissionName") String permissionName){
+        return new ResponData<>(HttpStatus.OK.value(), "get search role", this.customerService.findCustomerByRole(roleName,permissionName));
     }
 }

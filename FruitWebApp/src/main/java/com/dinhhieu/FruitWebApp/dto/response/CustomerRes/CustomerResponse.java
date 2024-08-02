@@ -1,5 +1,7 @@
 package com.dinhhieu.FruitWebApp.dto.response.CustomerRes;
 
+import com.dinhhieu.FruitWebApp.dto.response.RoleResponse;
+import com.dinhhieu.FruitWebApp.model.Role;
 import com.dinhhieu.FruitWebApp.validator.PhoneNumber;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -29,7 +31,8 @@ public class CustomerResponse {
 
     private String phoneNumber;
 
-    private Set<String> role;
+//    private Set<String> role;
+    private Set<RoleResponse> role;
 
     private Date createdAt;
 

@@ -7,10 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.aspectj.weaver.ast.Or;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -45,13 +42,22 @@ public class Customer {
     @PhoneNumber(message = "phone invalid format")
     private String phoneNumber;
 
-    @ElementCollection
-    @CollectionTable(name = "customer_roles", joinColumns = @JoinColumn(name = "customer_id"))
-    @Column(name = "role")
-    private Set<String> role;
+//    @ElementCollection
+//    @CollectionTable(name = "customer_roles", joinColumns = @JoinColumn(name = "customer_id"))
+//    @Column(name = "role")
+//    private Set<String> role;
+
+    @ManyToMany
+    private Set<Role> roles;
 
     @OneToMany(mappedBy = "customer")
     private List<Order> orders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "customer")
+    private List<Review> reviews;
+
+    @OneToMany(mappedBy = "customer")
+    private List<Conversation> conversations;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createdAt;
@@ -59,7 +65,10 @@ public class Customer {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date updatedAt;
 
+    @Column(name = "created_by")
     private String createdBy;
+
+    @Column(name = "updated_by")
     private String updatedBy;
 
     @PrePersist

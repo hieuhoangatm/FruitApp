@@ -2,20 +2,22 @@ package com.dinhhieu.FruitWebApp.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import java.util.Set;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@Entity
-@NoArgsConstructor
 @Builder
-@Table(name = "permissions")
+@NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
 public class Permission {
     @Id
-    private String name;
-
-    private String description;
-
+    String name;
+    String description;
 }

@@ -32,4 +32,6 @@ public interface CustomerService {
     Page<Customer> getAllCustomerWithSortByMultipleColumns(int pageNo, int pageSize, String... sorts);
 
     CustomerResponse getInfoThisCustomer();
+
+    List<Customer> findCustomerByRole(String nameRole, String namePermission);
 }

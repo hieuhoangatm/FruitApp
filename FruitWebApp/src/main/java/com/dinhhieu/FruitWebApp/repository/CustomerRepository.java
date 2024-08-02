@@ -43,4 +43,7 @@ public interface CustomerRepository extends JpaRepository< Customer,Long> {
 //                          @Param("address") String address,
 //                          @Param("email") String email);
 
+    @Query("SELECT u FROM Customer u JOIN u.roles r JOIN r.permissions p WHERE r.name = :roleName AND p.name = :permissionName")
+    List<Customer> findCustomerByRole(String roleName, String permissionName);
+
 }

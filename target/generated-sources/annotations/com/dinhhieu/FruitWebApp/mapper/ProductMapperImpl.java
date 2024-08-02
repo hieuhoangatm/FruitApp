@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-29T14:28:13+0700",
+    date = "2024-08-01T16:51:17+0700",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.3 (Amazon.com Inc.)"
 )
 @Component
@@ -51,7 +51,7 @@ public class ProductMapperImpl implements ProductMapper {
     }
 
     @Override
-    public void updateProduc(Product product, ProductUpdateRequest productUpdateRequest) {
+    public void updateProduct(Product product, ProductUpdateRequest productUpdateRequest) {
         if ( productUpdateRequest == null ) {
             return;
         }

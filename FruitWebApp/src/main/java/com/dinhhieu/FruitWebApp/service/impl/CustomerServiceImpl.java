@@ -7,6 +7,7 @@ import com.dinhhieu.FruitWebApp.enums.Role;
 import com.dinhhieu.FruitWebApp.mapper.CustomerMapper;
 import com.dinhhieu.FruitWebApp.model.Customer;
 import com.dinhhieu.FruitWebApp.repository.CustomerRepository;
+import com.dinhhieu.FruitWebApp.repository.RoleRepository;
 import com.dinhhieu.FruitWebApp.service.CustomerService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,8 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
 
+    private final RoleRepository roleRepository;
+
 //    private PasswordEncoder passwordEncoder;
     @Override
     public CustomerResponse saveCustomer(CustomerCreateRequest customerCreateRequest) {
@@ -50,7 +54,7 @@ public class CustomerServiceImpl implements CustomerService {
         //set role
         TreeSet<String> roles = new TreeSet<>();
         roles.add(Role.USER.name());
-        customer.setRole(roles);
+//        customer.setRole(roles);
 
 
         this.customerRepository.save(customer);
@@ -61,6 +65,13 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerResponse updateCustomer(long id, CustomerUpdateRequest customerUpdateRequest) {
         Customer customer = this.customerRepository.findById(id).orElseThrow(()-> new RuntimeException("customer not found"));
         customerMapper.updateCustomer(customer,customerUpdateRequest);
+
+//        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//        customer.setPassword(passwordEncoder.encode(customerUpdateRequest.getPassWord));
+
+        List<com.dinhhieu.FruitWebApp.model.Role> roles = roleRepository.findAllById(customerUpdateRequest.getRoles());
+        customer.setRoles(new HashSet<>(roles));
+
         return this.customerMapper.toCustomerResponse(this.customerRepository.save(customer));
     }
 
@@ -78,8 +89,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
 //    @PostAuthorize("returnObject.username == authentication.name")
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<CustomerResponse> getAllCustomer() {
+    @PreAuthorize("hasAuthority('SCOPE_CREATE_DATA')")
+        public List<CustomerResponse> getAllCustomer() {
         log.info("get customer by role admin");
         return this.customerRepository.findAll().stream().map(customerMapper::toCustomerResponse).toList();
 
@@ -136,5 +147,10 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepository.findByEmail(email).orElseThrow(()-> new RuntimeException("customer not existed"));
 
         return customerMapper.toCustomerResponse(customer);
+    }
+
+    @Override
+    public List<Customer> findCustomerByRole(String nameRole, String namePermission) {
+        return this.customerRepository.findCustomerByRole(nameRole,namePermission);
     }
 }
