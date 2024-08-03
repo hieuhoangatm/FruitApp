@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -52,10 +53,14 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setPassword(passwordEncoder.encode(customerCreateRequest.getPassword()));
 
         //set role
-        TreeSet<String> roles = new TreeSet<>();
-        roles.add(Role.USER.name());
+//        TreeSet<String> roles = new TreeSet<>();
+//        roles.add(Role.USER.name());
+//        roles.add(Role.ADMIN.name());
 //        customer.setRole(roles);
 
+        //set theo database
+        List<com.dinhhieu.FruitWebApp.model.Role> roles = roleRepository.findAllById(customerCreateRequest.getRoles());
+        customer.setRoles(new HashSet<>(roles));
 
         this.customerRepository.save(customer);
         return customerMapper.toCustomerResponse(customer);
@@ -89,7 +94,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
 //    @PostAuthorize("returnObject.username == authentication.name")
-    @PreAuthorize("hasAuthority('SCOPE_CREATE_DATA')")
+//    @PreAuthorize("hasAuthority('SCOPE_CREATE_DATA')")
         public List<CustomerResponse> getAllCustomer() {
         log.info("get customer by role admin");
         return this.customerRepository.findAll().stream().map(customerMapper::toCustomerResponse).toList();
@@ -140,7 +145,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     public CustomerResponse getInfoThisCustomer(){
-        var context = SecurityContextHolder.getContext();
+        //SecurityContext
+        SecurityContext context = SecurityContextHolder.getContext();
 
         String email = context.getAuthentication().getName();
 

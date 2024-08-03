@@ -22,5 +22,10 @@ public class Message {
     @JoinColumn(name = "sender_id")
     private Customer customer;
 
+    @Lob
+    private String content;
+
+
+
 
 }

@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -24,6 +26,8 @@ public class CustomerCreateRequest {
 
     @Size(min = 6, message = "Password must be at least 6 characters long")
     private String password;
+
+    private List<String> roles;
 
     private String phoneNumber;
 }

@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -32,7 +33,8 @@ public class CustomerResponse {
     private String phoneNumber;
 
 //    private Set<String> role;
-    private Set<RoleResponse> role;
+//    private Set<RoleResponse> role;
+    private List<String> role;
 
     private Date createdAt;
 

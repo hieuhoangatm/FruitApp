@@ -16,6 +16,7 @@ public interface CustomerRepository extends JpaRepository< Customer,Long> {
     boolean existsByEmail(String email);
 
     Optional<Customer> findByEmail(String email);
+
     @Query("SELECT c from Customer c where (:startDate is null or c.createdAt > :startDate) and (:endDate is null or c.createdAt <:endDate)")
     List<Customer> findCustomersByCreatedAtBetween(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
