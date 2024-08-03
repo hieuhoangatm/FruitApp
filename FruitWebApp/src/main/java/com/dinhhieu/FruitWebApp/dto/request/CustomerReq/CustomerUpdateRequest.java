@@ -21,6 +21,6 @@ public class CustomerUpdateRequest {
 
     private String phoneNumber;
 
-    private List<String> roles;
+    private List<String> role;
 
 }

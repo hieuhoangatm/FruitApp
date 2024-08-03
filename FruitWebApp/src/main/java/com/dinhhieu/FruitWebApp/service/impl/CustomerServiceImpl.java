@@ -3,9 +3,9 @@ package com.dinhhieu.FruitWebApp.service.impl;
 import com.dinhhieu.FruitWebApp.dto.request.CustomerReq.CustomerCreateRequest;
 import com.dinhhieu.FruitWebApp.dto.request.CustomerReq.CustomerUpdateRequest;
 import com.dinhhieu.FruitWebApp.dto.response.CustomerRes.CustomerResponse;
-import com.dinhhieu.FruitWebApp.enums.Role;
 import com.dinhhieu.FruitWebApp.mapper.CustomerMapper;
 import com.dinhhieu.FruitWebApp.model.Customer;
+import com.dinhhieu.FruitWebApp.model.Role;
 import com.dinhhieu.FruitWebApp.repository.CustomerRepository;
 import com.dinhhieu.FruitWebApp.repository.RoleRepository;
 import com.dinhhieu.FruitWebApp.service.CustomerService;
@@ -59,7 +59,10 @@ public class CustomerServiceImpl implements CustomerService {
 //        customer.setRole(roles);
 
         //set theo database
-        List<com.dinhhieu.FruitWebApp.model.Role> roles = roleRepository.findAllById(customerCreateRequest.getRoles());
+//        List<com.dinhhieu.FruitWebApp.model.Role> roles = roleRepository.findAllById(customerCreateRequest.getRoles());
+//        customer.setRoles(new HashSet<>(roles));
+
+        List<Role> roles = roleRepository.findAllById(customerCreateRequest.getRole());
         customer.setRoles(new HashSet<>(roles));
 
         this.customerRepository.save(customer);
@@ -74,7 +77,10 @@ public class CustomerServiceImpl implements CustomerService {
 //        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 //        customer.setPassword(passwordEncoder.encode(customerUpdateRequest.getPassWord));
 
-        List<com.dinhhieu.FruitWebApp.model.Role> roles = roleRepository.findAllById(customerUpdateRequest.getRoles());
+//        List<com.dinhhieu.FruitWebApp.model.Role> roles = roleRepository.findAllById(customerUpdateRequest.getRoles());
+//        customer.setRoles(new HashSet<>(roles));
+
+        List<Role> roles = roleRepository.findAllById(customerUpdateRequest.getRole());
         customer.setRoles(new HashSet<>(roles));
 
         return this.customerMapper.toCustomerResponse(this.customerRepository.save(customer));

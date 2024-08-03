@@ -34,7 +34,8 @@ public class CustomerResponse {
 
 //    private Set<String> role;
 //    private Set<RoleResponse> role;
-    private List<String> role;
+//    private List<String> role;
+//    private Set<Role> roles;
 
     private Date createdAt;
 

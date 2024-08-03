@@ -10,6 +10,7 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface CustomerMapper {
+    @Mapping(target = "roles",ignore = true)
     Customer toCustomer(CustomerCreateRequest customerCreateRequest);
 
 
