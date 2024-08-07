@@ -30,7 +30,6 @@ public class SecurityConfig {
     protected final String SIGNER_KEY = "9CD+6WbRMMdb0l2BHVdztaEVeAoAX89m11Ez26LH4sQIkQ/X2nPVF9KTReRT4Z2n";
 
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -38,12 +37,15 @@ public class SecurityConfig {
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, "/api/v1/customer").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/v1/auth/log-in").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/v1/customer").hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/logout").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/verify-token").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/auth/refresh-token").permitAll()
+                        .requestMatchers("/api/v1/auth/forgot-password/**").permitAll()
+                        .requestMatchers("/api/v1/auth/set-password/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/customer/**").hasAuthority("SCOPE_ADMIN")
                         .requestMatchers(HttpMethod.GET,"/api/v1/product").hasAuthority("SCOPE_USER")
                         .requestMatchers("/api/v1/category/**").hasAuthority("SCOPE_ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/api/v1/auth/logout").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/api/v1/auth/verify-token").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/api/v1/auth/refresh-token").permitAll()
                         .anyRequest().authenticated()
                 );
         http.oauth2ResourceServer(

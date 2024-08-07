@@ -10,10 +10,7 @@ import com.dinhhieu.FruitWebApp.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -45,4 +42,16 @@ public class AuthenticationController {
     ResponData<?> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest) throws ParseException, JOSEException {
         return new ResponData<>(HttpStatus.OK.value(), "refresh token", this.authenticationService.refreshToken(refreshTokenRequest));
     }
+
+    @PostMapping("/forgot-password")
+    public ResponData<?> forgotPassword(@RequestParam String email){
+        return new ResponData<>(HttpStatus.OK.value(),"forgot password",authenticationService.forgotPassword(email));
+    }
+
+    @PostMapping("/set-password")
+    public ResponData<?> setPassword(@RequestParam String email, @RequestHeader String password){
+        return new ResponData<>(HttpStatus.OK.value(), "reset password", authenticationService.setPassword(email, password));
+    }
+
+
 }

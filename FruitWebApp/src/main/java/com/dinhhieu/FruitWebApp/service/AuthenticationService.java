@@ -10,14 +10,18 @@ import com.dinhhieu.FruitWebApp.model.Customer;
 import com.dinhhieu.FruitWebApp.model.InvalidatedToken;
 import com.dinhhieu.FruitWebApp.repository.CustomerRepository;
 import com.dinhhieu.FruitWebApp.repository.InvalidatedTokenRepository;
+import com.dinhhieu.FruitWebApp.util.EmailUtil;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +39,10 @@ public class AuthenticationService {
     private final CustomerRepository customerRepository;
 
     private final InvalidatedTokenRepository invalidatedTokenRepository;
+
+    private final EmailUtil emailUtil;
+
+
     @NonFinal
     protected final String SIGNER_KEY = "9CD+6WbRMMdb0l2BHVdztaEVeAoAX89m11Ez26LH4sQIkQ/X2nPVF9KTReRT4Z2n";
 
@@ -180,5 +188,44 @@ public class AuthenticationService {
         String token = genarateToken(customer);
 
         return AuthenticationResponse.builder().token(token).authenticated(true).build();
+    }
+
+    public String forgotPassword(String email) {
+//        SecurityContext context = SecurityContextHolder.getContext();
+//        String emailLogin = context.getAuthentication().getName();
+//
+//        if (!email.equalsIgnoreCase(emailLogin)) {
+//            throw new IllegalArgumentException("Email does not match with the logged in account");
+//        }
+//
+//        Customer customer = customerRepository.findByEmail(emailLogin)
+//                .orElseThrow(() -> new IllegalArgumentException("Email does not exist"));
+
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Email does not exist"));
+
+        try {
+            emailUtil.sendSetPasswordEmail(email);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Unable to send set password email", e);
+        }
+        return "Please check your email to set a new password.";
+    }
+
+    public String setPassword(String email, String password){
+//        SecurityContext context = SecurityContextHolder.getContext();
+//        String emailLogin = context.getAuthentication().getName();
+//
+//        if (!email.equalsIgnoreCase(emailLogin)) {
+//            throw new IllegalArgumentException("Email does not match with the logged in account");
+//        }
+
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Email does not exist"));
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+        customer.setPassword(passwordEncoder.encode(password));
+        customerRepository.save(customer);
+        return "set new password successfully";
     }
 }

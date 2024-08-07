@@ -11,8 +11,30 @@
 	<groupId>com.dinhhieu</groupId>
 	<artifactId>FruitWebApp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
+	<repositories>
+		<repository>
+			<id>groupdocs-artifact-repository</id>
+			<name>GroupDocs Artifact Repository</name>
+			<url>https://repository.groupdocs.cloud/repo</url>
+		</repository>
+
+		<repository>
+			<id>aspose-repo</id>
+			<url>https://repository.aspose.com/repo/</url>
+		</repository>
+
+<!--		<repository>-->
+<!--			<id>AsposeJavaAPI</id>-->
+<!--			<name>Aspose Java API</name>-->
+<!--			<url>https://repository.aspose.com/repo/</url>-->
+<!--		</repository>-->
+
+	</repositories>
 	<name>FruitWebApp</name>
 	<description>Demo project for Spring Boot</description>
+
+
 	<url/>
 	<licenses>
 		<license/>
@@ -116,6 +138,66 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>5.3.0</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.5.13.3</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/org.docx4j/docx4j -->
+		<dependency>
+			<groupId>org.docx4j</groupId>
+			<artifactId>docx4j</artifactId>
+			<version>6.1.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>fr.opensagres.xdocreport</groupId>
+			<artifactId>fr.opensagres.poi.xwpf.converter.pdf</artifactId>
+			<version>2.0.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.groupdocs</groupId>
+			<artifactId>groupdocs-conversion-cloud</artifactId>
+			<version>23.4</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+
+<!--		<dependency>-->
+<!--			<groupId>com.aspose</groupId>-->
+<!--			<artifactId>aspose-words</artifactId>-->
+<!--			<version>23.6</version>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>com.aspose</groupId>
+			<artifactId>aspose-words</artifactId>
+			<version>18.10</version>
+			<classifier>jdk16</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.aspose</groupId>
+			<artifactId>aspose-words</artifactId>
+			<version>18.10</version>
+			<classifier>javadoc</classifier>
+		</dependency>
+
+
 
 
 	</dependencies>

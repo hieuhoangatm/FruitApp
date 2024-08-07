@@ -5,6 +5,7 @@ import com.dinhhieu.FruitWebApp.dto.request.CategoryReq.CategoryCreateRequest;
 import com.dinhhieu.FruitWebApp.dto.request.CategoryReq.CategoryUpdateRequestDTO;
 import com.dinhhieu.FruitWebApp.dto.response.CategoryRes.CategoryResponse;
 import com.dinhhieu.FruitWebApp.service.CategoryService;
+import io.swagger.annotations.Api;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.text.ParseException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/category")
+@Api(value = "File Conversion Controller", description = "API for converting files")
 public class CategoryController {
     private final CategoryService categoryService;
 //    @PostMapping("")
