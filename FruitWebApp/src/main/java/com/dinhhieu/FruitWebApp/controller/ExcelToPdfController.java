@@ -56,10 +56,8 @@ import com.itextpdf.text.DocumentException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequestMapping("/api/convert")
@@ -67,11 +65,10 @@ public class ExcelToPdfController {
 
     @Autowired
     private ExcelToPdfService excelToPdfService;
-
+    // co phai ngay luc dau e chang lua chon anh dau
     @PostMapping("/excel-to-pdf")
     public ResponseEntity<String> convertExcelToPdf(@RequestParam("file") MultipartFile file) {
         try {
-            // Get the original file name and remove any potential extension
             String originalFilename = file.getOriginalFilename();
             if (originalFilename == null) {
                 return ResponseEntity.badRequest().body("Filename is missing.");
