@@ -24,16 +24,12 @@ public class FileConversionController {
             String inputFilePath = System.getProperty("java.io.tmpdir") + File.separator + inputFile.getOriginalFilename();
             File tempFile = new File(inputFilePath);
 
-            // Lưu tệp tạm thời vào hệ thống
             inputFile.transferTo(tempFile);
 
-            // Đặt đường dẫn đầu ra cho tệp PDF
             String outputFilePath = tempFile.getParent() + File.separator + tempFile.getName().replaceFirst("[.][^.]+$", "") + ".pdf";
 
-            // Gọi dịch vụ để chuyển đổi tệp
             fileConversionService.convertToPdf(tempFile.getAbsolutePath(), outputFilePath);
 
-            // Xóa tệp tạm thời sau khi chuyển đổi
             tempFile.delete();
 
             return ResponseEntity.ok("File converted successfully: " + outputFilePath);

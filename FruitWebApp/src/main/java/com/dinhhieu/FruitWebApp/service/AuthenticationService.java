@@ -85,7 +85,7 @@ public class AuthenticationService {
                 .issuer("dinhhieu")
                 .issueTime(new Date())
                 .expirationTime(new Date(
-                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
+                        Instant.now().plus(24, ChronoUnit.HOURS).toEpochMilli()
                 ))
                 .claim("JWT keyt", "nội dung clam của JWT")
                 .claim("scope",buildScope(customer))
