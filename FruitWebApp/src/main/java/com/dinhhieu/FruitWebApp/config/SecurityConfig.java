@@ -1,9 +1,11 @@
 package com.dinhhieu.FruitWebApp.config;
 
+import com.dinhhieu.FruitWebApp.service.CustomUserDetailService;
 import lombok.experimental.NonFinal;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,7 +31,10 @@ public class SecurityConfig {
     @NonFinal
     protected final String SIGNER_KEY = "9CD+6WbRMMdb0l2BHVdztaEVeAoAX89m11Ez26LH4sQIkQ/X2nPVF9KTReRT4Z2n";
 
-
+//    @Bean
+//    public CustomUserDetailService customUserDetailService(){
+//        return new CustomUserDetailService();
+//    }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -44,10 +49,25 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/forgot-password/**").permitAll()
                         .requestMatchers("/api/v1/auth/set-password/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/customer/**").hasAuthority("SCOPE_ADMIN")
-                        .requestMatchers(HttpMethod.GET,"/api/v1/product").hasAuthority("SCOPE_USER")
+                        .requestMatchers(HttpMethod.GET,"/api/v1/product").permitAll()
                         .requestMatchers("/api/v1/category/**").hasAuthority("SCOPE_ADMIN")
                         .anyRequest().authenticated()
-                );
+                )
+
+                .oauth2Login(Customizer.withDefaults())
+                .formLogin(Customizer.withDefaults())
+                ;
+//                .oauth2Login(oauth2 -> oauth2
+//                        .loginPage("/oauth2/authorization/google")
+//                        .userInfoEndpoint(userInfo -> userInfo
+//                                .userService(customUserDetailService())  // Sử dụng CustomOAuth2UserService
+//                                .userAuthoritiesMapper(userAuthoritiesMapper()) // Map Google user to roles
+//                        )
+//                        .defaultSuccessUrl("/home")
+//                        .failureUrl("/login?error")
+//                );
+
+
         http.oauth2ResourceServer(
                 oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder()))
         );
@@ -65,7 +85,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList(" http://localhost:4173/"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
         corsConfiguration.setAllowCredentials(true);

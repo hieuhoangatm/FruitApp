@@ -95,4 +95,25 @@ public class CustomerController {
                                           @RequestParam("permissionName") String permissionName){
         return new ResponData<>(HttpStatus.OK.value(), "get search role", this.customerService.findCustomerByRole(roleName,permissionName));
     }
+
+    @GetMapping("/customer/findCustomerWithSortByColumnAndSearch")
+    public ResponData<?> customerWithSortByColumnAndSearch(@RequestParam(defaultValue = "0", required = false) int pageNo,
+                                                           @RequestParam(defaultValue = "20", required = false) int pageSize,
+                                                           @RequestParam(required = false) String search,
+                                                           @RequestParam(required = false) String sortBy
+                                                           ){
+        return new ResponData<>(HttpStatus.OK.value(), "get customer with sort by column and search customer query", this.customerService.getALlCustomerWithSortByColumnAndSearch(pageNo,pageSize,search,sortBy));
+    }
+    @GetMapping("/customer/searchCriteria")
+    public ResponData<?> findCustomerByCriteria(@RequestParam(defaultValue = "0", required = false) int pageNo,
+                                                @RequestParam(defaultValue = "20", required = false) int pageSize,
+                                                @RequestParam(required = false) String sortBy,
+                                                @RequestParam(required = false) String... search
+                                                ){
+        return new ResponData<>(HttpStatus.OK.value(), "get search customer by criteria", this.customerService.findCustomerByCriteria(pageNo,pageSize,sortBy,search));
+    }
+
+
+
+
 }

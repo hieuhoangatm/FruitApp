@@ -3,11 +3,13 @@ package com.dinhhieu.FruitWebApp.service.impl;
 import com.dinhhieu.FruitWebApp.dto.request.CustomerReq.CustomerCreateRequest;
 import com.dinhhieu.FruitWebApp.dto.request.CustomerReq.CustomerUpdateRequest;
 import com.dinhhieu.FruitWebApp.dto.response.CustomerRes.CustomerResponse;
+import com.dinhhieu.FruitWebApp.dto.response.PageResponse;
 import com.dinhhieu.FruitWebApp.mapper.CustomerMapper;
 import com.dinhhieu.FruitWebApp.model.Customer;
 import com.dinhhieu.FruitWebApp.model.Role;
 import com.dinhhieu.FruitWebApp.repository.CustomerRepository;
 import com.dinhhieu.FruitWebApp.repository.RoleRepository;
+import com.dinhhieu.FruitWebApp.repository.SearchRepository;
 import com.dinhhieu.FruitWebApp.service.CustomerService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,8 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerMapper customerMapper;
 
     private final RoleRepository roleRepository;
+
+    private final SearchRepository searchRepository;
 
 //    private PasswordEncoder passwordEncoder;
     @Override
@@ -161,8 +165,19 @@ public class CustomerServiceImpl implements CustomerService {
         return customerMapper.toCustomerResponse(customer);
     }
 
+
     @Override
     public List<Customer> findCustomerByRole(String nameRole, String namePermission) {
         return this.customerRepository.findCustomerByRole(nameRole,namePermission);
+    }
+
+    @Override
+    public PageResponse<?> getALlCustomerWithSortByColumnAndSearch(int pageNo, int pageSize, String search, String sortBy) {
+        return this.searchRepository.getALlCustomerWithSortByColumnAndSearch(pageNo, pageSize, search,sortBy);
+    }
+
+    @Override
+    public PageResponse<?> findCustomerByCriteria(int pageNo, int pageSize, String sortBy, String... search) {
+        return searchRepository.advanceSearchCustomer(pageNo,pageSize,sortBy,search);
     }
 }

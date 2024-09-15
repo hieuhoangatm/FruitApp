@@ -3,6 +3,7 @@ package com.dinhhieu.FruitWebApp.service;
 import com.dinhhieu.FruitWebApp.dto.request.CustomerReq.CustomerCreateRequest;
 import com.dinhhieu.FruitWebApp.dto.request.CustomerReq.CustomerUpdateRequest;
 import com.dinhhieu.FruitWebApp.dto.response.CustomerRes.CustomerResponse;
+import com.dinhhieu.FruitWebApp.dto.response.PageResponse;
 import com.dinhhieu.FruitWebApp.model.Customer;
 import org.springframework.data.domain.Page;
 
@@ -34,4 +35,9 @@ public interface CustomerService {
     CustomerResponse getInfoThisCustomer();
 
     List<Customer> findCustomerByRole(String nameRole, String namePermission);
+
+    PageResponse<?> getALlCustomerWithSortByColumnAndSearch(int pageNo, int pageSize, String search, String sortBy);
+
+    PageResponse<?> findCustomerByCriteria(int pageNo, int pageSize, String sortBy, String... search);
+
 }
