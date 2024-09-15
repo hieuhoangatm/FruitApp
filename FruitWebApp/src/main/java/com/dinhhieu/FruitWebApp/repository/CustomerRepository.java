@@ -47,4 +47,6 @@ public interface CustomerRepository extends JpaRepository< Customer,Long> {
     @Query("SELECT u FROM Customer u JOIN u.roles r JOIN r.permissions p WHERE r.name = :roleName AND p.name = :permissionName")
     List<Customer> findCustomerByRole(String roleName, String permissionName);
 
+    @Query("SELECT u FROM Customer u where (:googleId is null or u.googleId = :googleId)")
+    Optional<Customer> findCustomerByGoogleId(String googleId);
 }

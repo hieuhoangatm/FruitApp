@@ -42,6 +42,9 @@ public class Customer {
     @PhoneNumber(message = "phone invalid format")
     private String phoneNumber;
 
+    private String googleId;
+
+    private String authProvider;
 //    @ElementCollection
 //    @CollectionTable(name = "customer_roles", joinColumns = @JoinColumn(name = "customer_id"))
 //    @Column(name = "role")

@@ -1,9 +1,12 @@
 package com.dinhhieu.FruitWebApp.service.impl;
 
+import com.cloudinary.api.exceptions.ApiException;
 import com.dinhhieu.FruitWebApp.dto.request.CustomerReq.CustomerCreateRequest;
 import com.dinhhieu.FruitWebApp.dto.request.CustomerReq.CustomerUpdateRequest;
 import com.dinhhieu.FruitWebApp.dto.response.CustomerRes.CustomerResponse;
 import com.dinhhieu.FruitWebApp.dto.response.PageResponse;
+import com.dinhhieu.FruitWebApp.exception.AppException;
+import com.dinhhieu.FruitWebApp.exception.ErrorCode;
 import com.dinhhieu.FruitWebApp.mapper.CustomerMapper;
 import com.dinhhieu.FruitWebApp.model.Customer;
 import com.dinhhieu.FruitWebApp.model.Role;
@@ -49,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerResponse saveCustomer(CustomerCreateRequest customerCreateRequest) {
         if(this.customerRepository.existsByEmail(customerCreateRequest.getEmail())){
-            throw new RuntimeException("Email existed");
+           throw new AppException(ErrorCode.USER_EXISTED);
         }
         Customer customer = customerMapper.toCustomer(customerCreateRequest);
 

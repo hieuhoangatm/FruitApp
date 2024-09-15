@@ -5,6 +5,7 @@ import com.dinhhieu.FruitWebApp.dto.response.DocumentMetadataResponse;
 import com.dinhhieu.FruitWebApp.exception.ServiceException;
 import com.dinhhieu.FruitWebApp.model.DocumentMetadata;
 import com.dinhhieu.FruitWebApp.service.DocumentService;
+import com.dinhhieu.FruitWebApp.service.FileConversionService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -34,6 +35,9 @@ public class DocumentController {
 
     @Autowired
     private DocumentService documentService;
+
+    @Autowired
+    private FileConversionService fileConversionService;
 
     @GetMapping("/findAll")
     public List<DocumentMetadataResponse> getDocumentMetadataList() {
@@ -104,8 +108,8 @@ public class DocumentController {
 
         try {
 
-//            String mediaType = Files.probeContentType(filePath);
-            String mediaType = document.getContentType();
+            String mediaType = Files.probeContentType(filePath);
+//            String mediaType = document.getContentType();
             if (mediaType == null) {
                 mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
             }

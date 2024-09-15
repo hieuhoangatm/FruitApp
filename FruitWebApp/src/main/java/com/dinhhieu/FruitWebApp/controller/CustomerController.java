@@ -1,11 +1,13 @@
 package com.dinhhieu.FruitWebApp.controller;
 
+import com.dinhhieu.FruitWebApp.dto.ApiResponse;
 import com.dinhhieu.FruitWebApp.dto.ResponData;
 import com.dinhhieu.FruitWebApp.dto.request.CustomerReq.CustomerCreateRequest;
 import com.dinhhieu.FruitWebApp.dto.request.CustomerReq.CustomerUpdateRequest;
 import com.dinhhieu.FruitWebApp.dto.response.CustomerRes.CustomerResponse;
 import com.dinhhieu.FruitWebApp.model.Customer;
 import com.dinhhieu.FruitWebApp.service.CustomerService;
+import io.swagger.annotations.Api;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -86,8 +88,11 @@ public class CustomerController {
     }
 
     @GetMapping("/customer/getInfo")
-    public ResponData<?> getInfoCustomer(){
-        return new ResponData<>(HttpStatus.OK.value(),"get info user by id", this.customerService.getInfoThisCustomer());
+    public ApiResponse<?> getInfoCustomer(){
+        ApiResponse apiResponse = new ApiResponse<>();
+        apiResponse.setResult(this.customerService.getInfoThisCustomer());
+        apiResponse.setMessage("test custom api info");
+        return apiResponse;
     }
 
     @GetMapping("/customer/searchRole")
