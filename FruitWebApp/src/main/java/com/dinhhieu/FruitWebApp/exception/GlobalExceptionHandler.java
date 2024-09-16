@@ -34,13 +34,14 @@ public class GlobalExceptionHandler {
         return  errorResponse;
     }
 
-    @ExceptionHandler(value = RuntimeException.class)
-    public ResponseEntity<ApiResponse> handlingRuntimeException(RuntimeException runtimeException){
-        ApiResponse apiResponse = new ApiResponse<>();
-        apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
-        apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
-        return ResponseEntity.badRequest().body(apiResponse);
-    }
+//    bat loi chung
+//    @ExceptionHandler(value = RuntimeException.class)
+//    public ResponseEntity<ApiResponse> handlingRuntimeException(RuntimeException runtimeException){
+//        ApiResponse apiResponse = new ApiResponse<>();
+//        apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
+//        apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
+//        return ResponseEntity.badRequest().body(apiResponse);
+//    }
 
     @ExceptionHandler(value = AppException.class)
     public ResponseEntity<ApiResponse> handlingAppException(AppException runtimeException){
@@ -48,6 +49,14 @@ public class GlobalExceptionHandler {
         ApiResponse apiResponse = new ApiResponse<>();
         apiResponse.setCode(errorCode.getCode());
         apiResponse.setMessage(errorCode.getMessage());
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse> handlingArgumentException(IllegalArgumentException illegalArgumentException){
+        ApiResponse apiResponse = new ApiResponse<>();
+        apiResponse.setCode(ErrorCode.IllegalArgumentException.getCode());
+        apiResponse.setMessage(ErrorCode.IllegalArgumentException.getMessage());
         return ResponseEntity.badRequest().body(apiResponse);
     }
 }

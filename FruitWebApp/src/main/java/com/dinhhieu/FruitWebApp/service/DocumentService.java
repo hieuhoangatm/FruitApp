@@ -7,6 +7,9 @@ import com.dinhhieu.FruitWebApp.mapper.DocumentMetadataMapper;
 import com.dinhhieu.FruitWebApp.model.DocumentMetadata;
 import com.dinhhieu.FruitWebApp.repository.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
@@ -16,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import freemarker.template.Configuration;
+
+import javax.print.Doc;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -46,15 +51,20 @@ public class DocumentService {
             new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
 
-    public List<DocumentMetadataResponse> getDocumentMetadataList() {
-        return this.documentRepository.findAll().stream().map(documentMetadataMapper::toDocumentResponse).toList();
+    public Page<DocumentMetadataResponse> getDocumentMetadataList(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo,pageSize);
+        Page<DocumentMetadata> documentMetadata = this.documentRepository.findAll(pageable);
+        return documentMetadata.map(documentMetadata1 -> this.documentMetadataMapper.toDocumentResponse(documentMetadata1));
     }
 
-    public List<DocumentMetadata> findByName(String name) {
+    public Page<DocumentMetadataResponse> findByName(String name, int pageNo, int pageSize) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Search name must not be null or empty");
+//            throw new RuntimeException("search name must not be null");
         }
-        return documentRepository.findByName(name);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<DocumentMetadata> documentMetadata = documentRepository.findByName(pageable, name);
+        return documentMetadata.map(documentMetadata1 -> this.documentMetadataMapper.toDocumentResponse(documentMetadata1));
     }
 
     public List<DocumentMetadata> findByExtension(String extension) {

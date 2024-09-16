@@ -40,8 +40,10 @@ public class DocumentController {
     private FileConversionService fileConversionService;
 
     @GetMapping("/findAll")
-    public List<DocumentMetadataResponse> getDocumentMetadataList() {
-        return documentService.getDocumentMetadataList();
+    public ResponData<?> getDocumentMetadataList(@RequestParam(defaultValue = "0") int pageNo,
+                                                                  @RequestParam(defaultValue = "10") int pageSize
+                                                                  ) {
+        return new ResponData<>(HttpStatus.OK.value(), "get all document", this.documentService.getDocumentMetadataList(pageNo,pageSize));
     }
 
     @GetMapping("/findById/{id}")
@@ -50,8 +52,9 @@ public class DocumentController {
     }
 
     @GetMapping("/findByName")
-    public List<DocumentMetadata> findByName(@RequestParam(required = false) String name) {
-        return documentService.findByName(name);
+    public ResponData<?> findByName(@RequestParam(required = false) String name, @RequestParam(defaultValue = "0") int pageNo,
+                                                @RequestParam(defaultValue = "10") int pageSize) {
+        return new ResponData<>(HttpStatus.OK.value(), "get file by name", this.documentService.findByName(name, pageNo, pageSize));
     }
 
 
