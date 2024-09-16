@@ -103,26 +103,27 @@ public class DocumentController {
     @GetMapping("/{id}")
     public ResponseEntity<Resource> readFile(@PathVariable Long id) {
         DocumentMetadata document = documentService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Document not found with id " + id));
+                .orElseThrow(() -> new RuntimeException("Document không tồn tại với id " + id));
         Path filePath = Path.of(document.getFilePath());
 
         try {
-
             String mediaType = Files.probeContentType(filePath);
-//            String mediaType = document.getContentType();
-            if (mediaType == null) {
-                mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-            }
 
+            // Nếu file không phải PDF, thực hiện chuyển đổi
+            if (!"application/pdf".equals(mediaType)) {
+                String pdfFilePath = fileConversionService.convertToPdf(document.getFilePath());
+                filePath = Path.of(pdfFilePath);
+                mediaType = "application/pdf";
+            }
 
             Resource resource = new InputStreamResource(Files.newInputStream(filePath));
 
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(mediaType))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.getName() + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + document.getName() + "\"")
                     .body(resource);
         } catch (IOException e) {
-            throw new RuntimeException("Error occurred while loading file " + document.getFilePath(), e);
+            throw new RuntimeException("Lỗi xảy ra khi tải file " + document.getFilePath(), e);
         }
     }
 

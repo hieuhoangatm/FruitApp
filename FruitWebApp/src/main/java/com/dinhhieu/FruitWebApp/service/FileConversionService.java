@@ -31,6 +31,32 @@ public class FileConversionService {
         }
     }
 
+    public String convertToPdf(String inputFilePath) throws IOException {
+        File inputFile = new File(inputFilePath);
+        String outputDir = inputFile.getParent();
+        ProcessBuilder processBuilder = new ProcessBuilder(
+                LIBREOFFICE_PATH,
+                "--headless",
+                "--convert-to", "pdf",
+                "--outdir", outputDir,
+                inputFilePath
+        );
+        Process process = processBuilder.start();
+
+        try {
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                throw new IOException("Conversion failed with exit code " + exitCode);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Conversion process was interrupted", e);
+        }
+
+        // Trả về đường dẫn file PDF sau khi chuyển đổi
+        return inputFilePath.replaceAll("\\.[^.]+$", ".pdf");
+    }
+
 //    public String viewFileContent(String inputFilePath) throws IOException {
 //        // Chuyển đổi file thành định dạng văn bản (.txt)
 //        File tempFile = new File(inputFilePath + ".txt");
