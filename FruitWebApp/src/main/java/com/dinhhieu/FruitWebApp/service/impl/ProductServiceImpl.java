@@ -1,6 +1,8 @@
 package com.dinhhieu.FruitWebApp.service.impl;
 
 import com.dinhhieu.FruitWebApp.dto.response.ProductRes.ProductResponse;
+import com.dinhhieu.FruitWebApp.exception.AppException;
+import com.dinhhieu.FruitWebApp.exception.ErrorCode;
 import com.dinhhieu.FruitWebApp.mapper.ProductMapper;
 import com.dinhhieu.FruitWebApp.model.Order;
 import com.dinhhieu.FruitWebApp.model.Product;
@@ -49,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(long id) {
-        return this.productRepository.findById(id).orElseThrow(()->new RuntimeException("Product not found"));
+        return this.productRepository.findById(id).orElseThrow(()->new AppException(ErrorCode.PRODUCT_NOT_FOUND));
     }
 
     @Override

@@ -17,6 +17,7 @@ public class FileConversionService {
                 "--outdir", new File(outputFilePath).getParent(),
                 inputFilePath
         );
+
         Process process = processBuilder.start();
 
 
@@ -30,6 +31,7 @@ public class FileConversionService {
             throw new IOException("Conversion process was interrupted", e);
         }
     }
+
 
     public String convertToPdf(String inputFilePath) throws IOException {
         File inputFile = new File(inputFilePath);

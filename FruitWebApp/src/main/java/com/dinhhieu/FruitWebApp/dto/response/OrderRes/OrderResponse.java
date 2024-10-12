@@ -1,5 +1,6 @@
 package com.dinhhieu.FruitWebApp.dto.response.OrderRes;
 
+import com.dinhhieu.FruitWebApp.dto.response.CustomerRes.CustomerResponse;
 import com.dinhhieu.FruitWebApp.model.Customer;
 import com.dinhhieu.FruitWebApp.model.OrderDetail;
 import lombok.Getter;

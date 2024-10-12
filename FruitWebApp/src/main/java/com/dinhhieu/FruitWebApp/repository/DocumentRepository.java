@@ -26,4 +26,7 @@ public interface DocumentRepository extends JpaRepository<DocumentMetadata, Long
 
     @Query("select d from DocumentMetadata d where d.name like %:name%")
     Page<DocumentMetadata> findByName(Pageable pageable, String name);
+
+//    @Query("select  d from DocumentMetadata  d where d.name like  %?2%")
+//    Page<DocumentMetadata> findByName(Pageable pageable, String name);
 }

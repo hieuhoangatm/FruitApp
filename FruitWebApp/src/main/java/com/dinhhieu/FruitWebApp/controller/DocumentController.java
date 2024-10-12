@@ -2,6 +2,8 @@ package com.dinhhieu.FruitWebApp.controller;
 
 import com.dinhhieu.FruitWebApp.dto.ResponData;
 import com.dinhhieu.FruitWebApp.dto.response.DocumentMetadataResponse;
+import com.dinhhieu.FruitWebApp.exception.AppException;
+import com.dinhhieu.FruitWebApp.exception.ErrorCode;
 import com.dinhhieu.FruitWebApp.exception.ServiceException;
 import com.dinhhieu.FruitWebApp.model.DocumentMetadata;
 import com.dinhhieu.FruitWebApp.service.DocumentService;
@@ -73,19 +75,50 @@ public class DocumentController {
 
 
     @GetMapping("/download/{id}")
+//    public void getFile(@PathVariable Long id, HttpServletResponse response) {
+//        InputStream is = null;
+//        try {
+//            DocumentMetadata metadata = documentService.findById(id).get();
+//            is = documentService.getDocumentStream(metadata);
+//            if(is != null) {
+//                IOUtils.copy(is, response.getOutputStream());
+//                response.setContentType(metadata.getContentType());
+//                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + metadata.getName() + "\"");
+//                response.setHeader("test header", "hello test header");
+//                response.flushBuffer();
+//            } else {
+//                throw new ServiceException("Document with id:" + id + " not found.");
+//            }
+//        } catch (IOException ex) {
+//            String msg = "Error writing file to output stream. Document id: " + id;
+//            logger.info(msg, ex);
+//            throw new ServiceException(msg);
+//        } finally {
+//            IOUtils.closeQuietly(is);
+//        }
+//
+//    }
     public void getFile(@PathVariable Long id, HttpServletResponse response) {
         InputStream is = null;
         try {
-            DocumentMetadata metadata = documentService.findById(id).get();
+            DocumentMetadata metadata = documentService.findById(id).orElseThrow(() ->
+                    new ServiceException("Document with id: " + id + " not found.")
+            );
+
+            // Lấy InputStream cho file
             is = documentService.getDocumentStream(metadata);
-            if(is != null) {
-                IOUtils.copy(is, response.getOutputStream());
-                response.setContentType(metadata.getContentType());
+
+            if (is != null) {
+                // Đặt Content-Type và Content-Disposition
+                response.setContentType(metadata.getContentType()); // Lấy từ metadata
                 response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + metadata.getName() + "\"");
                 response.setHeader("test header", "hello test header");
-                response.flushBuffer();
+
+                // Sao chép nội dung file vào response
+                IOUtils.copy(is, response.getOutputStream());
+                response.flushBuffer(); // Đẩy nội dung ra
             } else {
-                throw new ServiceException("Document with id:" + id + " not found.");
+                throw new ServiceException("Document with id: " + id + " not found.");
             }
         } catch (IOException ex) {
             String msg = "Error writing file to output stream. Document id: " + id;
@@ -94,8 +127,8 @@ public class DocumentController {
         } finally {
             IOUtils.closeQuietly(is);
         }
-
     }
+
 
     @DeleteMapping("/delete/{id}")
     public ResponData<?> deleteDocument(@PathVariable Long id) {
@@ -106,13 +139,17 @@ public class DocumentController {
     @GetMapping("/{id}")
     public ResponseEntity<Resource> readFile(@PathVariable Long id) {
         DocumentMetadata document = documentService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Document không tồn tại với id " + id));
+                .orElseThrow(() -> new RuntimeException("Document not found with id " + id));
+        String path = document.getFilePath();
+        System.out.println(path);
         Path filePath = Path.of(document.getFilePath());
 
         try {
             String mediaType = Files.probeContentType(filePath);
+            // text/plain
+            //image/jpeg\
 
-            // Nếu file không phải PDF, thực hiện chuyển đổi
+            // application/pdf
             if (!"application/pdf".equals(mediaType)) {
                 String pdfFilePath = fileConversionService.convertToPdf(document.getFilePath());
                 filePath = Path.of(pdfFilePath);

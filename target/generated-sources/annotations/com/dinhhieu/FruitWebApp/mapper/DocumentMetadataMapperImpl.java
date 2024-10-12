@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-09-09T09:48:54+0700",
+    date = "2024-09-30T10:27:37+0700",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.11 (Amazon.com Inc.)"
 )
 @Component
@@ -21,6 +21,7 @@ public class DocumentMetadataMapperImpl implements DocumentMetadataMapper {
 
         DocumentMetadataResponse documentMetadataResponse = new DocumentMetadataResponse();
 
+        documentMetadataResponse.setId( documentMetadata.getId() );
         documentMetadataResponse.setName( documentMetadata.getName() );
         documentMetadataResponse.setDescription( documentMetadata.getDescription() );
         documentMetadataResponse.setContentType( documentMetadata.getContentType() );

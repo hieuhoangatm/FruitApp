@@ -2,6 +2,9 @@ package com.dinhhieu.FruitWebApp.service.impl;
 
 import com.dinhhieu.FruitWebApp.dto.request.OrderReq.OrderCreateRequest;
 import com.dinhhieu.FruitWebApp.dto.response.OrderRes.OrderResponse;
+import com.dinhhieu.FruitWebApp.exception.AppException;
+import com.dinhhieu.FruitWebApp.exception.ErrorCode;
+import com.dinhhieu.FruitWebApp.mapper.CustomerMapper;
 import com.dinhhieu.FruitWebApp.mapper.OrderMapper;
 import com.dinhhieu.FruitWebApp.model.Customer;
 import com.dinhhieu.FruitWebApp.model.Order;
@@ -29,18 +32,20 @@ public class OrderServiceImpl {
 
     private final OrderMapper orderMapper;
 
+    private final CustomerMapper customerMapper;
+
     @Transactional
     public OrderResponse createOrder(OrderCreateRequest orderCreateRequest){
         SecurityContext securityContext = SecurityContextHolder.getContext();
         String email = securityContext.getAuthentication().getName();
 
-        Customer customer = customerRepository.findByEmail(email).orElseThrow(()->new RuntimeException("customer not existed"));
+        Customer customer = customerRepository.findByEmail(email).orElseThrow(()->new AppException(ErrorCode.CUSTOMER_NOT_FOUND));
 
         Order order = Order.builder().customer(customer)
                 .build();
 
         List<OrderDetail> orderDetails = orderCreateRequest.getOrderDetails().stream().map(detailOrder->{
-            Product product = productRepository.findById(detailOrder.getId()).orElseThrow(()->new RuntimeException("Product not found"));
+            Product product = productRepository.findById(detailOrder.getId()).orElseThrow(()->new AppException(ErrorCode.PRODUCT_NOT_FOUND));
 
             if(product.getQuantity() < detailOrder.getQuantity()){
 

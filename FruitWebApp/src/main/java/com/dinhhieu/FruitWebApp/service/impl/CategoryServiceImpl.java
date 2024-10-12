@@ -5,6 +5,8 @@ import com.cloudinary.utils.ObjectUtils;
 import com.dinhhieu.FruitWebApp.dto.request.CategoryReq.CategoryCreateRequest;
 import com.dinhhieu.FruitWebApp.dto.request.CategoryReq.CategoryUpdateRequestDTO;
 import com.dinhhieu.FruitWebApp.dto.response.CategoryRes.CategoryResponse;
+import com.dinhhieu.FruitWebApp.exception.AppException;
+import com.dinhhieu.FruitWebApp.exception.ErrorCode;
 import com.dinhhieu.FruitWebApp.mapper.CategoryMapper;
 import com.dinhhieu.FruitWebApp.model.Category;
 import com.dinhhieu.FruitWebApp.repository.CategoryRepository;
@@ -42,7 +44,7 @@ CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryResponse savaCategory(CategoryCreateRequest categoryCreateRequest, MultipartFile multipartFile) {
         if(this.categoryRepository.existsByCategoryName(categoryCreateRequest.getCategoryName())){
-            throw new RuntimeException("categoryName existed");
+            throw new AppException(ErrorCode.CATEGORY_NAME_EXISTED);
         }
         Category category = this.categoryMapper.toCategory(categoryCreateRequest);
 
@@ -50,7 +52,8 @@ CategoryServiceImpl implements CategoryService {
             String fileUrl = uploadImage.uploadFileImage(multipartFile);
             category.setUrlImage(fileUrl);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload image", e);
+//            throw new RuntimeException("Failed to upload image", e);
+            throw new AppException(ErrorCode.FALE_TO_UPLOAD_FILE);
         }
 
         this.categoryRepository.save(category);
@@ -65,7 +68,7 @@ CategoryServiceImpl implements CategoryService {
 //        category.setDescriptionImage(category.getDescriptionImage());
 
 //        Category category = categoryMapper.toCategory(categoryRequest);
-        Category category = categoryRepository.findById(id).orElseThrow(()->new RuntimeException("Category not found"));
+        Category category = categoryRepository.findById(id).orElseThrow(()-> new AppException(ErrorCode.CUSTOMER_NOT_FOUND));
         categoryMapper.updateCategory(category,categoryRequest);
         return categoryMapper.toCategoryResponse(categoryRepository.save(category));
     }

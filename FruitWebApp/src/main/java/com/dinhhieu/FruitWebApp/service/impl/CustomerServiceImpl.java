@@ -78,7 +78,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerResponse updateCustomer(long id, CustomerUpdateRequest customerUpdateRequest) {
-        Customer customer = this.customerRepository.findById(id).orElseThrow(()-> new RuntimeException("customer not found"));
+        Customer customer = this.customerRepository.findById(id).orElseThrow(()-> new AppException(ErrorCode.CUSTOMER_NOT_FOUND));
         customerMapper.updateCustomer(customer,customerUpdateRequest);
 
 //        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -101,7 +101,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerResponse getCustomerById(long customerId) {
-        Customer customer = this.customerRepository.findById(customerId).orElseThrow(()->new RuntimeException("Customer not found"));
+        Customer customer = this.customerRepository.findById(customerId).orElseThrow(()->new AppException(ErrorCode.CUSTOMER_NOT_FOUND));
         return customerMapper.toCustomerResponse(customer);
     }
 
@@ -163,7 +163,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         String email = context.getAuthentication().getName();
 
-        Customer customer = customerRepository.findByEmail(email).orElseThrow(()-> new RuntimeException("customer not existed"));
+        Customer customer = customerRepository.findByEmail(email).orElseThrow(()-> new AppException(ErrorCode.CUSTOMER_NOT_FOUND));
 
         return customerMapper.toCustomerResponse(customer);
     }
